@@ -1,19 +1,20 @@
 ﻿using ContactosAPI.Data;
-using ContactosAPI.Model;
+using ContactosAPI.Model.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ContactosAPI.Controllers {
 	[ApiController]
 	[Route("api/user")]
-	public class UserController: ControllerBase {
-		/*[HttpGet] public async Task<ActionResult<List<ModelUser>>> get() {
+	public class UserController : ControllerBase {
+		[HttpGet]
+		public async Task<ActionResult<List<User>>> get() {
 			var function = new UserRepository();
 			var list = await function.ShowUsers();
 			return list;
-		}*/
+		}
 
-		[HttpPost("login")] 
-		public async Task<ActionResult<int>> login([FromBody] ModelUser user) {
+		[HttpPost("login")]
+		public async Task<ActionResult<int>> login([FromBody] LoginUserRequest user) {
 			var function = new UserRepository();
 			var result = await function.login(user);
 
@@ -24,7 +25,7 @@ namespace ContactosAPI.Controllers {
 		}
 
 		[HttpPut("updateName")]
-		public async Task<ActionResult> updateName([FromBody] ModelUser user) {
+		public async Task<ActionResult> updateName([FromBody] UpdateNameRequest user) {
 			var function = new UserRepository();
 			//user.id = id;
 			await function.updateName(user);
@@ -33,7 +34,7 @@ namespace ContactosAPI.Controllers {
 		}
 
 		[HttpPut("updateEmail")]
-		public async Task<ActionResult> updateEmail([FromBody] ModelUser user) {
+		public async Task<ActionResult> updateEmail([FromBody] UpdateEmailRequest user) {
 			var function = new UserRepository();
 			//user.id = id;
 			await function.updateEmail(user);
@@ -42,7 +43,7 @@ namespace ContactosAPI.Controllers {
 		}
 
 		[HttpPut("updatePass")]
-		public async Task<ActionResult> updatePass([FromBody] ModelUser user) {
+		public async Task<ActionResult> updatePass([FromBody] UpdatePasswordRequest user) {
 			var function = new UserRepository();
 			//user.id = id;
 			await function.updatePass(user);

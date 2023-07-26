@@ -14,7 +14,7 @@ namespace ContactosAPI.Controllers {
 			return result;
 		}
 
-		[HttpDelete("delete")]
+		[HttpPost("delete")]
 		public async Task DeleteContact([FromBody] DeleteContactRequest request) {
 			var function = new ContactRepository();
 			await function.deleteContact(request);
@@ -24,6 +24,13 @@ namespace ContactosAPI.Controllers {
 		public async Task AddContact([FromBody] AddContactRequest request) {
 			var function = new ContactRepository();
 			await function.addContact(request);
+		}
+
+		[HttpPost("noAdded")]
+		public async Task<ActionResult<List<Contact>>> getContactsNoAdded([FromBody] ContactsNoAddedRequest request) {
+			var function = new ContactRepository();
+			var result = await function.getContactsNoAdded(request);
+			return result;
 		}
 
 	}

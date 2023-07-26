@@ -2,6 +2,7 @@
 using ContactosAPI.Model.User;
 using MySql.Data.MySqlClient;
 using System.Data;
+using System.Security.Policy;
 
 namespace ContactosAPI.Data {
 	public class UserRepository {
@@ -53,22 +54,24 @@ namespace ContactosAPI.Data {
 			}
 		}
 
-		public async Task<int> getId(LoginUserRequest user) {
-			int userId = 0;
+		public async Task<LoginUserResponse> getId(LoginUserRequest user) {
+			LoginUserResponse response = new LoginUserResponse();
 
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = "SELECT id FROM user where email = @email";
+				var query = "SELECT id, name FROM user where email = @email";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@email", user.email);
 
 					using (var reader = await command.ExecuteReaderAsync()) {
-						if (await reader.ReadAsync())
-							userId = reader.GetInt16("id");
+						if (await reader.ReadAsync()) {
+							response.id = reader.GetInt16("id");
+							response.name = reader.GetString("name");
+						}
 
-						return userId;
+						return response;
 					}
 				}
 			}
@@ -113,6 +116,23 @@ namespace ContactosAPI.Data {
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@pass", Hashier.getHash(user.password));
 					command.Parameters.AddWithValue("@id", user.id);
+
+					await command.ExecuteNonQueryAsync();
+				}
+			}
+		}
+
+		public async Task createUser(RegisterUserRequest user) {
+			using (var connection = new MySqlConnection(connectionManager.connection)) {
+				await connection.OpenAsync();
+
+				var query = "insert into user(name, email, pass, hash_pass) values (@name, @email, @password, @hash)";
+
+				using (var command = new MySqlCommand(query, connection)) {
+					command.Parameters.AddWithValue("@name", user.name);
+					command.Parameters.AddWithValue("@email", user.email);
+					command.Parameters.AddWithValue("@password", user.password);
+					command.Parameters.AddWithValue("@hash", Hashier.getHash(user.password));
 
 					await command.ExecuteNonQueryAsync();
 				}

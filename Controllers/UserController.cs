@@ -14,7 +14,7 @@ namespace ContactosAPI.Controllers {
 		}
 
 		[HttpPost("login")]
-		public async Task<ActionResult<int>> login([FromBody] LoginUserRequest user) {
+		public async Task<ActionResult<LoginUserResponse>> login([FromBody] LoginUserRequest user) {
 			var function = new UserRepository();
 			var result = await function.login(user);
 
@@ -49,6 +49,13 @@ namespace ContactosAPI.Controllers {
 			await function.updatePass(user);
 
 			return NoContent();
+		}
+
+		[HttpPost("register")]
+		public async Task<ActionResult> registerUser([FromBody] RegisterUserRequest user) {
+			var function = new UserRepository();
+			await function.createUser(user);
+			return StatusCode(201);
 		}
 	}
 }

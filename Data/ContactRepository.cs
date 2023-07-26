@@ -2,6 +2,7 @@
 using ContactosAPI.Model.Contact;
 using ContactosAPI.Model.User;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Relational;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Data;
 
@@ -64,6 +65,35 @@ namespace ContactosAPI.Data {
 					command.Parameters.AddWithValue("@contact_id", request.contactId);
 
 					await command.ExecuteNonQueryAsync();
+				}
+			}
+		}
+
+		public async Task<List<Contact>> getContactsNoAdded(ContactsNoAddedRequest request) {
+			List<Contact> contacts = new List<Contact>();
+
+			using (var connection = new MySqlConnection(connectionManager.connection)) {
+				await connection.OpenAsync();
+
+				string query = $"select * from user where id != @user_id and not exists (" +
+				$"select 1 from contact where contact_id = user.id and user_id = @user_id)";
+
+				using (var command = new MySqlCommand(query, connection)) {
+					command.Parameters.AddWithValue("@user_id", request.userId);
+
+					using (var reader = await command.ExecuteReaderAsync()){
+						while (await reader.ReadAsync()) {
+							var contact = new Contact {
+								id = reader.GetInt32("id"),
+								name = reader.GetString("name"),
+								email = reader.GetString("email"),
+							};
+
+							contacts.Add(contact);
+						}
+
+						return contacts;
+					}
 				}
 			}
 		}

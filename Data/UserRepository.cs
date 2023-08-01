@@ -1,6 +1,7 @@
 ﻿using ContactosAPI.Connection;
 using ContactosAPI.Model.User;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Relational;
 using System.Data;
 using System.Security.Policy;
 
@@ -111,10 +112,11 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = "update user set pass = @pass where id= @id";
+				var query = $"update user set pass = @pass, hash_pass = @hash_pass where id = @id";
 
 				using (var command = new MySqlCommand(query, connection)) {
-					command.Parameters.AddWithValue("@pass", Hashier.getHash(user.password));
+					command.Parameters.AddWithValue("@pass", user.password);
+					command.Parameters.AddWithValue("@hash_pass", Hashier.getHash(user.password));
 					command.Parameters.AddWithValue("@id", user.id);
 
 					await command.ExecuteNonQueryAsync();

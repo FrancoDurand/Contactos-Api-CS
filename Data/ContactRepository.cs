@@ -16,7 +16,7 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				string query = $"select u.id, u.name, u.email from user u left join contact c" +
+				string query = $"select u.id, u.name, u.email from users u left join contacts c" +
 				$" on c.contact_id = u.id where c.user_id = @id";
 
 				using (var command = new MySqlCommand(query, connection)) {
@@ -58,7 +58,7 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = $"insert into contact(user_id, contact_id) values (@user_id, @contact_id)";
+				var query = $"insert into contacts(user_id, contact_id) values (@user_id, @contact_id)";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@user_id", request.userId);
@@ -75,8 +75,8 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				string query = $"select * from user where id != @user_id and not exists (" +
-				$"select 1 from contact where contact_id = user.id and user_id = @user_id)";
+				string query = $"select * from users where id != @user_id and not exists (" +
+				$"select 1 from contacts where contact_id = user.id and user_id = @user_id)";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@user_id", request.userId);

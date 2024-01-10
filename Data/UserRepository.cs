@@ -15,7 +15,7 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = "SELECT id, name, email, pass, hash_pass FROM user";
+				var query = "SELECT id, name, email, pass, hash_pass FROM users";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					using (var reader = await command.ExecuteReaderAsync()) {
@@ -40,7 +40,7 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = "SELECT email, pass FROM user where email = @email and hash_pass = @hash_pass";
+				var query = "SELECT email, pass FROM users where email = @email and hash_pass = @hash_pass";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@email", user.email);
@@ -61,7 +61,7 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = "SELECT id, name FROM user where email = @email";
+				var query = "SELECT id, name FROM users where email = @email";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@email", user.email);
@@ -82,7 +82,7 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = "update user set name = @name where id= @id";
+				var query = "update users set name = @name where id= @id";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@name", user.name);
@@ -97,7 +97,7 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = "update user set email = @email where id= @id";
+				var query = "update users set email = @email where id= @id";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@email", user.email);
@@ -112,7 +112,7 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = $"update user set pass = @pass, hash_pass = @hash_pass where id = @id";
+				var query = $"update users set pass = @pass, hash_pass = @hash_pass where id = @id";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@pass", user.password);
@@ -128,7 +128,7 @@ namespace ContactosAPI.Data {
 			using (var connection = new MySqlConnection(connectionManager.connection)) {
 				await connection.OpenAsync();
 
-				var query = "insert into user(name, email, pass, hash_pass) values (@name, @email, @password, @hash)";
+				var query = "insert into users(name, email, pass, hash_pass) values (@name, @email, @password, @hash)";
 
 				using (var command = new MySqlCommand(query, connection)) {
 					command.Parameters.AddWithValue("@name", user.name);
